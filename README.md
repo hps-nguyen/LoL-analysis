@@ -1,1 +1,1 @@
-# LoL-analysis
+# League of Legends Analysis
