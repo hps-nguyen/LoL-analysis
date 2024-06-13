@@ -353,6 +353,20 @@ Since the improved model's training accuracy has increased significantly compare
 
 The test set accuracy of the current model is 0.836. Since the test accuracy is close to the training accuracy and reflects an improvement over the baseline model, we consider the current model a strong candidate for the final model.
 
+### Experiment with `RandomForestClassifier`
+
+To further improve the model, we decide to fit all the engineered features to a `RandomForestClassifier` to see if the accuracy increases. Our motivation is to determine if introducing randomness to our features, while using the same learning principles, can produce a better classifier. The idea is that ensemble learning from random subsets of the training data and engineered features might help in generalizing the model while also potentially improving the complexity of the learning to reduce the model's bias.
+
+After training, the model's train accuracy is 0.873 and the best hyperparameters are gini criterion, number of estimators of 150 and tree's maximum depth of 15. This model has a test accuracy of 0.822. 
+
+It is observed that although the training accuracy for this model is greater than that of our current best model, the test accuracy does not show any improvement. This contrasts with our goal of using the `RandomForestClassifier` to enhance generalization. Since employing the `RandomForestClassifier` not only fails to improve the classifier's performance but also increases the computational cost of training, we have decided to discard this model and continue using our final `DecisionTreeClassifier`.
+
+### Finalize the final model
+
+Since we are staying with our best model using the `DecisionTreeClassifier`, we will finalize it by fitting the entire dataset to the model and computing the final accuracy.
+
+After training on the entire dataset, the final model's accuracy is 0.847.
+
 ## Fairness Analysis
 
 ### Identify groups
