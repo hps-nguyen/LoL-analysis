@@ -114,7 +114,7 @@ The table and the heatmap below shows the conditional probabilities of securing 
   frameborder="0"
 ></iframe>
 
-Interpretation:
+**Interpretation**:
 
 - Winning Teams: 80.52% of the time, winning teams secured the first Baron, while only 19.48% of winning teams did not secure the first Baron.
 - Losing Teams: 14.23% of the time, losing teams secured the first Baron, whereas 85.77% of losing teams did not secure the first Baron.
@@ -132,6 +132,7 @@ Upon further correlation exploration among the columns in the team dataset, we f
 #### Bivariate Analysis
 
 Explore individual role data
+
 We'll start by investigating the statistics of bot-lane players. The bot-lane role is particularly intriguing because it is often central to a team's strategy. In most games, bot-lane players choose ranged champions that deal damage primarily through regular attacks rather than skills. They typically start the game weak and need resources to become stronger in the late game. One common strategy is for the team to invest effort in allowing the bot-laner to gain resources (gold through kills, assists, and minion kills) and protect them during combat so they can deal maximal damage to opponent champions. Since the bot-lane role often deals substantial and consistent damage for the team during the late game, a stronger bot-laner generally improves the team's chances of winning. Therefore, to address our central question about team wins and losses, it's worthwhile to explore bot-lane data and the dynamic between bot-lane and other support roles.
 
 Questions of interest:
@@ -193,6 +194,59 @@ For top-laners, their damage to champions per gold spent is slightly lower than 
 It is observed that, on average, bot-laners relatively deal more damage to champions as the game progresses. While the data doesn't reflect our initial expectations regarding top-laners' early game damage, it does show that bot-laners and mid-laners are the roles that deal the most damage to champions in the late game. This aligns with the typical roles of these positions as the primary damage dealers or "carries" of a team. We will revisit the analysis of the carrying potential of bot-laners and mid-laners in the hypothesis testing section.
 
 ## Assessment of Missingness
+
+For the purpose of later analysis and prediction of game outcomes, we will include the following nominal columns: `firstblood`, `firstdragon`, `firstbaron`, `firsttower`, `firsttothreetowers`.
+
+| Column             |   Number of Missing Values |
+|:-------------------|---------------------------:|
+| firsttothreetowers |                     127778 |
+| firsttower         |                     127778 |
+| firstbaron         |                     127778 |
+| firstdragon        |                     127778 |
+| dragons            |                     124140 |
+| towers             |                     124140 |
+
+We can see that there are columns with identical number of missingness (e.g. firstdragon, firstbaron), we will analyze the missingness in these columns since they might have the same missingness mechanism. 
+
+Here is one instance of a game in our full dataset:
+
+| gameid                | position   | side   |   firstdragon |   firstbaron |   firsttower |   firsttothreetowers |
+|:----------------------|:-----------|:-------|--------------:|-------------:|-------------:|---------------------:|
+| ESPORTSTMNT01_2690210 | top        | Blue   |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | jng        | Blue   |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | mid        | Blue   |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | bot        | Blue   |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | sup        | Blue   |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | top        | Red    |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | jng        | Red    |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | mid        | Red    |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | bot        | Red    |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | sup        | Red    |           nan |          nan |          nan |                  nan |
+| ESPORTSTMNT01_2690210 | team       | Blue   |             0 |            0 |            1 |                    1 |
+| ESPORTSTMNT01_2690210 | team       | Red    |             1 |            0 |            0 |                    0 |
+
+It appears that if we focus solely on rows where the position column does not contain the value team, the missingness in these `first...` columns (i.e. firstdragon, firstbaron, etc.) is by design (MD). This is because we can infer from the position column whether there are missing values in these columns.
+
+However, when the position column value is team, we cannot determine if there is a missing value in these `first...` columns. Therefore, we need to carefully analyze these rows by separating them from the full dataset, similar to how we analyzed game measurements in the previous section.
+
+**Addressing Missingness in `first...` Columns in Game Rows**
+
+For the analysis of missingness in the `first...` columns only for rows where position is team, we will treat the DataFrame containing only these team rows as a separate dataset. Although the `first...` columns in the raw DataFrame contain a mix of individual role data and team data, they exhibit different missingness mechanisms when considered separately (as we have already verified the missingness mechanism of `first...` columns for individual role data as MD). This section will focus on analyzing the missingness mechanism for `first...` columns of team data alone.
+
+After filtering our all the role rows, we discover that the number of games with missing values (1819 games, which corresponds to 1819 * 2 = 3638 rows in the DataFrame) matches the number of missing values in each of the `first...` columns (3638 values), the missingness in these columns occurs in the same instances. Therefore, we can analyze and draw conclusions about them collectively.
+
+It appears that game rows with missing `first...` columns are related to the values in the `datacompleteness` column. Upon, examine values in `datacompleteness` and values in the `first...` columns, it is apparent that all the missing values occur in rows where `datacompleteness` is `partial`. 
+
+|      | datacompleteness   | is_missing   |
+|-----:|:-------------------|:-------------|
+|    0 | partial            | True         |
+|    1 | partial            | True         |
+|    2 | partial            | True         |
+|    3 | partial            | True         |
+
+However, this alone does not indicate a Missing by Design (MD) mechanism, as there are `partial` `completeness` rows that do not have missing values in these `first...` columns. Nevertheless, this observation prompts us to conduct a permutation test on the categorical distribution of the datacompleteness column for missing and non-missing values in the `first...` columns. The outcome of the test could suggest a Missing at Random (MAR) mechanism for the missingness.
+
+**Permutation test for verifying MAR of first... columns**
 <iframe
   src="assets/mar_hist_dep.html"
   width="800"
@@ -200,6 +254,7 @@ It is observed that, on average, bot-laners relatively deal more damage to champ
   frameborder="0"
 ></iframe>
 
+The p-value of the is less than 0.001. As the p-value of the test is extremely small, it's evident that the missing rows in the `first...` columns have a distribution distinct from that of the non-missing rows, as indicated by the values in `datacompleteness`. Therefore, since the missingness in `first...` columns depends on `datacompleteness`, their missing mechanism is Missing at Random (MAR).
 
 ## Hypothesis Testing
 <iframe
