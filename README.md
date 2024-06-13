@@ -14,6 +14,13 @@ Whether you're a seasoned League of Legends enthusiast or new to the world of es
 
 ## Data Cleaning and Exploratory Data Analysis
 ### Data Cleaning
+|    | gameid                | side   | result   |   Kills |   Deaths |   Assists |   Damage to Champions |   Damage per Minute |   Damage Mitigated per Minute |   Vision Score |   Total Gold |   Minion Kills |
+|---:|:----------------------|:-------|:---------|--------:|---------:|----------:|----------------------:|--------------------:|------------------------------:|---------------:|-------------:|---------------:|
+| 10 | ESPORTSTMNT01_2690210 | Blue   | False    |       9 |       19 |        19 |                 56560 |             1981.09 |                       2364.73 |            197 |        47070 |            680 |
+| 11 | ESPORTSTMNT01_2690210 | Red    | True     |      19 |        9 |        62 |                 79912 |             2799.02 |                       2872.33 |            205 |        52617 |            792 |
+| 22 | ESPORTSTMNT01_2690219 | Blue   | False    |       3 |       16 |         7 |                 59579 |             1690.98 |                       3109.61 |            277 |        57629 |            994 |
+| 23 | ESPORTSTMNT01_2690219 | Red    | True     |      16 |        3 |        39 |                 74855 |             2124.55 |                       2868.42 |            346 |        71004 |           1013 |
+| 34 | 8401-8401_game_1      | Blue   | True     |      13 |        6 |        35 |                 40086 |             1762.02 |                        nan    |            162 |        45468 |            nan |
 
 ### Explore team data
 #### Univariate analysis on team's statistics
