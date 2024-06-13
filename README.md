@@ -355,9 +355,28 @@ The test set accuracy of the current model is 0.836. Since the test accuracy is 
 
 ## Fairness Analysis
 
+### Identify groups
+
+Upon fitting the entire dataset to our final model, a question arises about the fairness of our classifier: *Does our classifier perform better for teams/games in Tier 1 professional leagues than it does for teams/games in lower leagues?* This question stems from our intuition that our assumptions about game tactics and team behaviors when we built our model might be more accurate for professional players/teams in Tier 1 leagues than for those in lower leagues. It is possible that the tactics and players in Tier 1 leagues are more consistent than those in lower leagues. Although it is uncertain whether our model's performance might favor the Tier 1 group, it is reasonable to conduct a fairness analysis on these two groups.
+
+To address this question, we will divide our dataset into two groups: one containing data from Tier 1 leagues and the other containing data from lower leagues. We will then use our final trained model to classify the results (win/lose) with the labeled groups and compute their accuracy scores, using the same metric we used to build the final model. Our goal is to conduct a statistical analysis to determine if our model performs fairly across both groups.
+
+### Perform permutation test
+
+As we already have the fairness-grouped data as well as the actual, predicted values, we are going to perform a permutation test using the **absolute difference in group accuracy scores** as the test statistic to see if our model's performance biases one group over the other. Here is the test's hypotheses:
+
+- Null hypothesis: Our model is fair. Its accuracy for Tier 1 leagues and lower leagues are roughly the same, and any differences are due to random chance.
+- Alternative Hypothesis: Our model is unfair. Its accuracy for Tier 1 leagues is different from its accuracy for lower leagues.
+
 <iframe
   src="assets/fair_hist.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
+
+The p-value is 0.96.
+
+### Fairness analysis conclusion
+
+As we failed to reject the null hypothesis with a p-value of 0.9, the permutation test provided a strong evident that the difference between the accuracy scores of our classifier for Tier 1 leagues and lower league groups is not significant. Thus we are confident that our classifier's performance is fair for both Tier 1 leagues and lower leagues groups.
