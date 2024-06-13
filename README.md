@@ -257,6 +257,18 @@ However, this alone does not indicate a Missing by Design (MD) mechanism, as the
 The p-value of the is less than 0.001. As the p-value of the test is extremely small, it's evident that the missing rows in the `first...` columns have a distribution distinct from that of the non-missing rows, as indicated by the values in `datacompleteness`. Therefore, since the missingness in `first...` columns depends on `datacompleteness`, their missing mechanism is Missing at Random (MAR).
 
 ## Hypothesis Testing
+Through exploring the data, we have found that mid-laners and bot-laners generally do the most damage to champions per gold spent. This observation inspired a key question: Which role, mid-laners or bot-laners, contributes more damage overall when carrying their team? Let's explore this question further.
+
+To answer this, we need to define what it means to 'carry' and determine the appropriate metric for measuring how much a role carries their team.
+
+**Defining 'Carry'**: In this context, a 'carry' is defined as the role that deals the most damage on their team in a game. This damage includes all forms: damage to champions, minions/monsters, and structures, as each type of damage contributes significantly to the team's victory.
+
+We focus on damage rather than kills because damage is a more direct measure of contribution to a team's success, whereas kills can be influenced by the specific champions being played (some champions can secure kills more easily than others).
+
+**Metric**: We choose to use the amount of damage dealt per minute as our metric. Specifically, we look at cases where mid-laners or bot-laners deal the most damage for their team to measure how much damage they have dealt when they carry their team. We exclude data points where neither the bot-laner nor mid-laner deals the most overall damage, as the carrying role in these cases would be another position. These exclusions help avoid complications from unconventional picks, game strategies, or unusually short games.
+
+Let's first visualize the observed distributions of Damage per Minute from mid-laners and bot-laners:
+
 <iframe
   src="assets/hist_mid_bot.html"
   width="800"
@@ -264,12 +276,26 @@ The p-value of the is less than 0.001. As the p-value of the test is extremely s
   frameborder="0"
 ></iframe>
 
+It appears that the average damage dealt by carry bot-laners is slightly greater than the average damage dealt by carry mid-laners. Let's perform a permutation test to formally determine if the average damage dealt by carry bot-laners is significantly greater.
+
+Note: Since we only have two samples of damage distributions from carry bot-laners and carry mid-laners without any well-defined population distribution models, we choose to use a permutation test as the suitable method for this case.
+
+Let's establish our hypotheses:
+
+- **Null hypothesis**: The damage dealt by carry bot-laners and carry mid-laners comes from the same distribution.
+- **Alternative hypothesis**: The damage dealt by carry bot-laners comes from a distribution that is greater than that of carry mid-laners.
+- **Test statistic**: The difference in group means of damage per minute (bot-laners' mean Damage per Minute minus mid-laners' mean Damage per Minute).
+
 <iframe
   src="assets/hypo_hist.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
+
+Since p-value of the test is less than 0.001, which is very small, we reject the null hypothesis.
+
+**Permutation Test Conclusion**: The test provided strong evidence that the mean damage dealt by carry bot-laners is significantly greater than that dealt by carry mid-laners. Therefore, we are more confident to believe that, in general, bot-laners deal more damage when carrying their team compared to mid-laners.
 
 ## Framing a Prediction Problem
 
