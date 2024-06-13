@@ -14,30 +14,51 @@ Whether you're a seasoned League of Legends enthusiast or new to the world of es
 
 ## Data Cleaning and Exploratory Data Analysis
 ### Data Cleaning
+In this section, we describe the data cleaning steps we took to prepare the dataset for analysis. This process is crucial to ensure that the data is in a consistent format, free of errors, and suitable for later exploration and analysis.
 
-Team dataset
+#### Steps Taken
+1. Reading and Converting Data Types:
+*Problem*: Some columns in the dataset contain mixed types (e.g., integers and strings).
+*Solution*: We specified the data types for these problematic columns to ensure they are read as strings. This prevents potential type-related issues during analysis.
 
-| gameid                | side   | result   | position   |   patch |   kills |   deaths |   assists |   damagetochampions |     dpm |   damagemitigatedperminute |   visionscore |   vspm |   totalgold |   goldspent |   minionkills |   towers | firstblood   | firstdragon   |   dragons | firstbaron   |   barons | firsttower   | firsttothreetowers   |   inhibitors | datacompleteness   |
-|:----------------------|:-------|:---------|:-----------|--------:|--------:|---------:|----------:|--------------------:|--------:|---------------------------:|--------------:|-------:|------------:|------------:|--------------:|---------:|:-------------|:--------------|----------:|:-------------|---------:|:-------------|:---------------------|-------------:|:-------------------|
-| ESPORTSTMNT01_2690210 | Blue   | False    | team       |   12.01 |       9 |       19 |        19 |               56560 | 1981.09 |                    2364.73 |           197 | 6.9002 |       47070 |       44570 |           680 |        3 | True         | False         |         1 | False        |        0 | True         | True                 |            0 | complete           |
-| ESPORTSTMNT01_2690210 | Red    | True     | team       |   12.01 |      19 |        9 |        62 |               79912 | 2799.02 |                    2872.33 |           205 | 7.1804 |       52617 |       45850 |           792 |        6 | False        | True          |         3 | False        |        0 | False        | False                |            1 | complete           |
-| ESPORTSTMNT01_2690219 | Blue   | False    | team       |   12.01 |       3 |       16 |         7 |               59579 | 1690.98 |                    3109.61 |           277 | 7.8619 |       57629 |       53945 |           994 |        3 | False        | False         |         1 | False        |        0 | False        | False                |            0 | complete           |
-| ESPORTSTMNT01_2690219 | Red    | True     | team       |   12.01 |      16 |        3 |        39 |               74855 | 2124.55 |                    2868.42 |           346 | 9.8202 |       71004 |       66410 |          1013 |       11 | True         | True          |         4 | True         |        2 | True         | True                 |            2 | complete           |
+2. Converting Binary Nominal Columns:
+*Problem*: Binary columns containing 0's and 1's should be converted to True/False for better clarity and consistency.
+*Solution*: We converted these columns to boolean types while preserving NaN values.
 
-Role dataset
+3. Removing Outlier Games:
+*Problem*: There were two instances where no team won a game, which are outliers since each game should have a winning team. We will ignore these instances since our analysis focuses heavily on win/loss outcomes.
+*Solution*: These outlier games were identified and removed from the dataset.
 
-| gameid                | side   | result   | position   | champion   |   patch |   kills |   deaths |   assists |   damagetochampions |     dpm |   damagemitigatedperminute |   visionscore |   vspm |   totalgold |   goldspent |   minionkills |   towers | firstblood   |   firstdragon |   dragons |   firstbaron |   barons |   firsttower |   firsttothreetowers |   inhibitors | datacompleteness   | playername   |
-|:----------------------|:-------|:---------|:-----------|:-----------|--------:|--------:|---------:|----------:|--------------------:|--------:|---------------------------:|--------------:|-------:|------------:|------------:|--------------:|---------:|:-------------|--------------:|----------:|-------------:|---------:|-------------:|---------------------:|-------------:|:-------------------|:-------------|
-| ESPORTSTMNT01_2690210 | Blue   | False    | top        | Renekton   |   12.01 |       2 |        3 |         2 |               15768 | 552.294 |                    777.793 |            26 | 0.9107 |       10934 |       10275 |           220 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Soboro       |
-| ESPORTSTMNT01_2690210 | Blue   | False    | jng        | Xin Zhao   |   12.01 |       2 |        5 |         6 |               11765 | 412.084 |                    650.158 |            48 | 1.6813 |        9138 |        8750 |            33 |      nan | True         |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Raptor       |
-| ESPORTSTMNT01_2690210 | Blue   | False    | mid        | LeBlanc    |   12.01 |       2 |        2 |         3 |               14258 | 499.405 |                    227.776 |            29 | 1.0158 |        9715 |        8725 |           177 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Feisty       |
-| ESPORTSTMNT01_2690210 | Blue   | False    | bot        | Samira     |   12.01 |       2 |        4 |         2 |               11106 | 389.002 |                    218.879 |            25 | 0.8757 |       10605 |       10425 |           208 |      nan | True         |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Gamin        |
-| ESPORTSTMNT01_2690210 | Blue   | False    | sup        | Leona      |   12.01 |       1 |        5 |         6 |                3663 | 128.301 |                    490.123 |            69 | 2.4168 |        6678 |        6395 |            42 |      nan | True         |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Loopy        |
-| ESPORTSTMNT01_2690210 | Red    | True     | top        | Gragas     |   12.01 |       1 |        1 |        12 |               17455 | 611.384 |                   1210.3   |            30 | 1.0508 |       10001 |        9750 |           221 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | DnDn         |
-| ESPORTSTMNT01_2690210 | Red    | True     | jng        | Viego      |   12.01 |       4 |        1 |        10 |               10564 | 370.017 |                    530.438 |            39 | 1.366  |       10293 |        8750 |            47 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            1 | complete           | Sylvie       |
-| ESPORTSTMNT01_2690210 | Red    | True     | mid        | Viktor     |   12.01 |       6 |        3 |        12 |               20690 | 724.693 |                    426.935 |            29 | 1.0158 |       11532 |        8900 |           196 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | FIESTA       |
-| ESPORTSTMNT01_2690210 | Red    | True     | bot        | Jinx       |   12.01 |       8 |        2 |        10 |               26687 | 934.746 |                    186.655 |            40 | 1.4011 |       14018 |       12800 |           299 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | vital        |
-| ESPORTSTMNT01_2690210 | Red    | True     | sup        | Alistar    |   12.01 |       0 |        2 |        18 |                4516 | 158.179 |                    518.004 |            67 | 2.3468 |        6773 |        5650 |            29 |      nan | False        |           nan |       nan |          nan |        0 |          nan |                  nan |            0 | complete           | Blessing     |
+4. Creating Functions for Data Access:
+*Problem*: For later analysis, we need to easily access team and player data separately.
+*Solution*: We created functions to filter and return the relevant rows for team data and player data. Here are the parts of the separated DataFrame returned by these functions.
+
+Team data
+
+| gameid                | side   | result   | position   |   patch |   kills |   deaths |   assists |
+|:----------------------|:-------|:---------|:-----------|--------:|--------:|---------:|----------:|
+| ESPORTSTMNT01_2690210 | Blue   | False    | team       |   12.01 |       9 |       19 |        19 |
+| ESPORTSTMNT01_2690210 | Red    | True     | team       |   12.01 |      19 |        9 |        62 |
+| ESPORTSTMNT01_2690219 | Blue   | False    | team       |   12.01 |       3 |       16 |         7 |
+| ESPORTSTMNT01_2690219 | Red    | True     | team       |   12.01 |      16 |        3 |        39 |
+
+Role data
+
+| gameid                | side   | result   | position   | champion   |   patch |   kills |   deaths |
+|:----------------------|:-------|:---------|:-----------|:-----------|--------:|--------:|---------:|
+| ESPORTSTMNT01_2690210 | Blue   | False    | top        | Renekton   |   12.01 |       2 |        3 |
+| ESPORTSTMNT01_2690210 | Blue   | False    | jng        | Xin Zhao   |   12.01 |       2 |        5 |
+| ESPORTSTMNT01_2690210 | Blue   | False    | mid        | LeBlanc    |   12.01 |       2 |        2 |
+| ESPORTSTMNT01_2690210 | Blue   | False    | bot        | Samira     |   12.01 |       2 |        4 |
+| ESPORTSTMNT01_2690210 | Blue   | False    | sup        | Leona      |   12.01 |       1 |        5 |
+| ESPORTSTMNT01_2690210 | Red    | True     | top        | Gragas     |   12.01 |       1 |        1 |
+| ESPORTSTMNT01_2690210 | Red    | True     | jng        | Viego      |   12.01 |       4 |        1 |
+| ESPORTSTMNT01_2690210 | Red    | True     | mid        | Viktor     |   12.01 |       6 |        3 |
+| ESPORTSTMNT01_2690210 | Red    | True     | bot        | Jinx       |   12.01 |       8 |        2 |
+| ESPORTSTMNT01_2690210 | Red    | True     | sup        | Alistar    |   12.01 |       0 |        2 |
+
+#### Impact of Data Cleaning
+These data cleaning steps were essential for ensuring the accuracy and reliability of our analyses. By converting data types and handling binary columns properly, we minimized the risk of type-related errors. Removing outlier games helped ensure that each game had a clear win/loss outcome. The functions we created for accessing team and player data will streamline our analysis process, making it easier to perform targeted analyses on specific subsets of the data.
 
 ### Explore team data
 #### Univariate analysis on team's statistics
