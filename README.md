@@ -299,11 +299,50 @@ Since p-value of the test is less than 0.001, which is very small, we reject the
 
 ## Framing a Prediction Problem
 
+As previously mentioned, our goal is to predict whether a team will win a game. We will develop a classifier that categorizes a team as 'win' or 'lose' based on their input features.
+
+Importantly, our classifier aims to predict the outcome before the game's conclusion. Therefore, we will avoid using any features that can only be collected at the end of the game, such as total gold or the number of turrets destroyed. Although this means we cannot use some valuable features like total gold and damage per minute, which we identified as having strong patterns between winning and losing in earlier analyses, we can leverage in-game features that might correlate strongly with these end-game statistics. For example, gold at the 15-minute mark might have a strong linear relationship with total gold by the end of the game. We will investigate these in-game features to establish a baseline model in the next section.
+
+Additionally, there are many potential nominal features that could be engineered to enhance our classifier, such as the champions picked or whether a team secured the first blood or first baron. We will explore these features in subsequent sections.
+
 ## Baseline Model
+
+### Decide features
+
+Since `totalgold` shows clear patterns between winning and losing, we will consider a team's `goldat10` and/or `goldat15` as the first feature(s) for our classifier. We observe that `goldat10` and `goldat15` exhibit the strongest correlations with `totalgold` (0.96) among in-game features. To establish a baseline model, we'll leverage these two quantitatice features as predictors in a `DecisionTreeClassifier`.
+
+Our choice of `DecisionTreeClassifier` is informed by previous data exploration, which revealed distinct patterns in `totalgold` distribution across two classes of result (win and lose).
+
+Additionally, we include `firstbaron` as a nominal feature for the classifier. Our prior analysis has showed that securing the first Baron significantly increases the likelihood of winning the game, making it a valuable feature for our baseline model.
+
+To ensure generalization and hyperparameter tuning, we'll split the data into training and test sets and employ k-fold cross-validation. Specifically, we'll utilize `GridSearchCV` from `sklearn` to efficiently optimize the `max_depth` hyperparameter. Our evaluation metric will be accuracy score, which we'll use consistently throughout this analysis to assess the performance of subsequent models relative to this baseline.
+
+### Train, evaluate the baseline model, next step
+
+We have trained the model with a training set of 15892 data points, and tested it on a test set of 5298 data points. The training set accuracy is 0.69 and the test set accuracy is 0.68.
+
+The baseline model's training accuracy indicates its suitability for prediction, as it significantly exceeds 0.5, outperforming random guessing in binary classification. The test accuracy, which closely mirrors the training accuracy, further suggests that the model generalizes well. As a result, we will use this model's design as a baseline for future improvements and set the test accuracy as the benchmark for evaluating subsequent enhancements.
 
 ## Final Model
 
+### Prepare
+
+To enhance our classifier, we need to engineer additional useful features. We will begin by incorporating more in-game features into our dataset. Additionally, to ensure the generalization of the final model, we will design and refine the model exclusively using the training set.
+
+### Add pick and patch features, one-hot encode
+
+The ban/pick stage is a crucial part of a game that can significantly impact a team's strategy and winning chances, especially in professional play. Professional players often specialize in one or two roles and have a set of champions they have mastered. Additionally, certain champions may be stronger or more suitable for the trending tactics of the current game version. Thus, it is highly advantageous if a professional player can pick one of their skilled champions, particularly if it is one of the season's "hot" picks.
+
+Given this context, knowing a team's picks is undoubtedly a valuable predictor for game outcomes. Therefore, we will include picking and version information as predictive features for our classifier to learn these complexities.
+
+Since both picked champions and patches (small version updates) are nominal, we plan to employ one-hot encoding for feature engineering. We recognize that some champion names may appear in the test set but not in the training set. For simplicity, we will set the `handle_unknown` parameter in `OneHotEncoder` to `'ignore'`.
+
+Furthermore, we acknowledge that the model may not generalize well to predict results for games in other years, as game versions and "hot" picks change constantly. However, this approach can still provide a framework for building predictive models with other datasets.
+
+After training, the model's train accuracy is 0.847 and the best hyperparameters are entropy criterion and tree's maximum depth of 4.
+
 ## Fairness Analysis
+
 <iframe
   src="assets/fair_hist.html"
   width="800"
