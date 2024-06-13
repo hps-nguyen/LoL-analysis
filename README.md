@@ -339,7 +339,19 @@ Since both picked champions and patches (small version updates) are nominal, we 
 
 Furthermore, we acknowledge that the model may not generalize well to predict results for games in other years, as game versions and "hot" picks change constantly. However, this approach can still provide a framework for building predictive models with other datasets.
 
-After training, the model's train accuracy is 0.847 and the best hyperparameters are entropy criterion and tree's maximum depth of 4.
+After training, the model's train accuracy is 0.847 and the best hyperparameters are entropy criterion and tree's maximum depth of 4. Since the training accuracy shows a significant improvement from the baseline model, we will incorporate these new features into our final model.
+
+### Add `first...` features
+
+We are also incorporating "first-take-down" features (e.g., first blood, first dragon) into our model. We believe these features are useful as they provide information about a team's early game performance. While these features may not be as strong indicators as firstbaron (a mid-late game feature) for a team's winning chance, they still offer valuable insights into the dynamic relationship between early and late game performance that the model might be able to capture.
+
+After training, the model's train accuracy is 0.852 and the best hyperparameters are entropy criterion and tree's maximum depth of 5. Adding these early game features improves the training accuracy by a noticeable amount. We also observe that the optimal maximum depth of our Decision Tree classifier increases by 1, indicating increased model complexity. This is unlikely to cause overfitting since the optimal maximum depth stops at 5 rather than continuing to increase.
+
+### Decide a candidate for the final model
+
+Since the improved model's training accuracy has increased significantly compared to the baseline model's test accuracy, the current model has learned to better capture the data's complexity and reduce bias. Therefore, we have decided to evaluate it on the test set to see if it can generalize to unseen data.
+
+The test set accuracy of the current model is 0.836. Since the test accuracy is close to the training accuracy and reflects an improvement over the baseline model, we consider the current model a strong candidate for the final model.
 
 ## Fairness Analysis
 
