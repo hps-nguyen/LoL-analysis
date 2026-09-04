@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="League of Legends esports win/loss analysis using 2022 Oracle's Elixir match data."
+    />
+    <title>League of Legends Win/Lose Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header" data-site-header>
+        <a class="brand" href="#top" aria-label="League analysis home">
+          <span class="brand-mark">L</span>
+          <span>LoL Analysis</span>
+        </a>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="site-nav" data-site-nav aria-label="Primary navigation">
+          <a href="#introduction">Intro</a>
+          <a href="#data-cleaning-and-exploratory-data-analysis">EDA</a>
+          <a href="#assessment-of-missingness">Missingness</a>
+          <a href="#hypothesis-testing">Testing</a>
+          <a href="#framing-a-prediction-problem">Model</a>
+          <a href="#fairness-analysis">Fairness</a>
+          <a href="https://github.com/hpsonnguyen/LoL-analysis">GitHub</a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero section-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">2022 esports dataset / Oracle's Elixir</p>
+            <h1>What separates a winning League team from a losing one?</h1>
+            <p class="hero-lede">
+              A compact data science study of professional League of Legends matches,
+              focused on objective control, role impact, missingness, model building, and
+              fairness across league tiers.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#findings">View Findings</a>
+              <a class="button secondary" href="https://oracleselixir.com/tools/downloads">Data Source</a>
+            </div>
+          </div>
+          <figure class="hero-art" aria-label="League of Legends thumbnail">
+            <img src="assets/intro_img.jpg" alt="League of Legends splash art" />
+            <figcaption>Competitive LoL match data, framed through win/loss patterns.</figcaption>
+          </figure>
+        </section>
+
+        <section id="findings" class="section-block reveal">
+          <div class="section-kicker">Quick Read</div>
+          <h2>Core Findings</h2>
+          <div class="insight-grid">
+            <article class="insight-card">
+              <span class="metric">80.5%</span>
+              <h3>First Baron matters</h3>
+              <p>Winning teams secured first Baron far more often than losing teams.</p>
+            </article>
+            <article class="insight-card">
+              <span class="metric">0.74</span>
+              <h3>Vision supports bot scaling</h3>
+              <p>Bot creep score strongly tracks with support, jungle, and mid vision score.</p>
+            </article>
+            <article class="insight-card">
+              <span class="metric">0.847</span>
+              <h3>Final model accuracy</h3>
+              <p>A tuned decision tree improved substantially over the baseline classifier.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="full-analysis" class="section-block full-analysis-section">
+          <article class="analysis-content" data-readme-content>
+            <p class="loading-copy">Loading the full original analysis from <code>README.md</code>...</p>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>League of Legends Win/Lose Analysis</p>
+        <a href="#top">Back to top</a>
+      </footer>
+    </div>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
