@@ -211,8 +211,8 @@ async function loadOriginalAnalysis() {
   if (!readmeTarget) return;
 
   try {
-    const response = await fetch('README.md');
-    if (!response.ok) throw new Error('README request failed');
+    const response = await fetch('CONTENT.md');
+    if (!response.ok) throw new Error('CONTENT request failed');
 
     const markdown = await response.text();
     readmeTarget.innerHTML = markdownToHtml(markdown);
@@ -221,7 +221,7 @@ async function loadOriginalAnalysis() {
     setupActiveNavigation();
   } catch {
     readmeTarget.innerHTML =
-      '<p>The full original report could not be loaded in this preview. Open <a href="README.md">README.md</a> to view the original analysis.</p>';
+      '<p>The full project analysis could not be loaded in this preview. Open <a href="CONTENT.md">CONTENT.md</a> to view the analysis.</p>';
   }
 }
 
